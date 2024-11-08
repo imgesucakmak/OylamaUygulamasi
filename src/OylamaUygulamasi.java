@@ -1,66 +1,89 @@
 import java.util.Scanner;
 
 public class OylamaUygulamasi {
-	
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        
+
         String[] konular = {"Siyasi Sorunlar", "Çevre Sorunları", "Ekonomik Sorunlar", "Güvenlik Sorunları", "Eğitim Sorunları"};
         int[][] oylar = new int[konular.length][10];
         int[] toplamPuan = new int[konular.length];
-        int[] degerlendirmesayisi = new int[konular.length];
-        
-        
-        for (int i = 0; i < 10; i++) {
-            System.out.println("Kullanıcı " + (i + 1) + " için puanlama:");
+        int[] degerlendirmeSayisi = new int[konular.length];
+
+        int kullaniciSayisi = 0; 
+
+        System.out.println("Anket Başladı ! Çıkmak için '0' yazınız.");
+
+              while (true) {
+            kullaniciSayisi++;
+            System.out.println("Kullanıcı " + kullaniciSayisi + " için puanlama:");
+            boolean cikis = false;
+
             for (int j = 0; j < konular.length; j++) {
-                System.out.print(konular[j] + " için 1-10 arasında bir puan verin: ");
-                int oylar1= scanner.nextInt();
-                
-                while (oylar1 < 1 || oylar1 > 10) {
-                    System.out.print("Lütfen geçerli bir puan girin!!!: ");
-                    oylar1 = scanner.nextInt();
+                System.out.print(konular[j] + " için 1-10 arasında bir puan verin (0 ile çıkış): ");
+                int puan = scanner.nextInt();
+
+                if (puan == 0) { 
+                    cikis = true;
+                    break;
                 }
-                
-                oylar[j][oylar1 - 1]++;
-                toplamPuan[j] += oylar1;
-                degerlendirmesayisi[j]++;
+
+              
+                while (puan < 1 || puan > 10) {
+                    System.out.print("Geçersiz puan! 1-10 arasında bir puan verin: ");
+                    puan = scanner.nextInt();
+                }
+
+                oylar[j][puan - 1]++;
+                toplamPuan[j] += puan;
+                degerlendirmeSayisi[j]++;
             }
+
+            if (cikis) { 
+                break;
+            }
+
             System.out.println();
         }
-       
-        System.out.println("Puanlama Raporu:");
+
+   
+        System.out.printf("%-20s", "Konu");
+        for (int i = 1; i <= 10; i++) {
+            System.out.printf("%-8d", i);
+        }
+        System.out.printf("%-15s\n", "Ortalama");
+
+   
         for (int i = 0; i < konular.length; i++) {
-            System.out.print(konular[i] + " için puanlar: ");
+            System.out.printf("%-20s", konular[i]);
+
+           
             for (int j = 0; j < 10; j++) {
-                System.out.print((j + 1) + " puanı: " + oylar[i][j] + " ");
+                System.out.printf("%-8d", oylar[i][j]);
             }
-            System.out.println();
+
+         
+            double ortalama = (double) toplamPuan[i] / degerlendirmeSayisi[i];
+            System.out.printf("%-15.2f\n", ortalama);
+        }
+
+        int maxIndex = 0;
+        int minIndex = 0;
+        for (int i = 1; i < konular.length; i++) {
+            if (toplamPuan[i] > toplamPuan[maxIndex]) {
+                maxIndex = i;
+            }
+            if (toplamPuan[i] < toplamPuan[minIndex]) {
+                minIndex = i;
+            }
         }
 
        
-        System.out.println("\nOrtalama Puanlar:");
-        for (int i = 0; i < konular.length; i++) {
-            double ortalama = (double) toplamPuan[i] / degerlendirmesayisi[i];
-            System.out.printf("%s: %.2f\n", konular[i], ortalama);
-        }
+        System.out.println("\nEn yüksek puan alan konu: " + konular[maxIndex] + " (Toplam: " + toplamPuan[maxIndex] + ")");
+        System.out.println("En düşük puan alan konu: " + konular[minIndex] + " (Toplam: " + toplamPuan[minIndex] + ")");
 
-        
-        int maxScoreIndex = 0;
-        int minScoreIndex = 0;
-        for (int i = 1; i < konular.length; i++) {
-            if (toplamPuan[i] > toplamPuan[maxScoreIndex]) {
-                maxScoreIndex = i;
-            }
-            if (toplamPuan[i] < toplamPuan[minScoreIndex]) {
-                minScoreIndex = i;
-            }
-        }
-        
-        System.out.println("\nEn yüksek puan alan konu: " + konular[maxScoreIndex] + " (Toplam Puan: " + toplamPuan[maxScoreIndex] + ")");
-        System.out.println("En düşük puan alan konu: " + konular[minScoreIndex] + " (Toplam Puan: " + toplamPuan[minScoreIndex] + ")");
-        
         scanner.close();
     }
 }
-
+        
+      
